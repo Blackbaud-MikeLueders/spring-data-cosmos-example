@@ -5,12 +5,19 @@ import com.azure.cosmos.CosmosClientBuilder;
 import com.azure.cosmos.DirectConnectionConfig;
 import com.azure.cosmos.GatewayConnectionConfig;
 import com.azure.spring.data.cosmos.config.AbstractCosmosConfiguration;
+import com.azure.spring.data.cosmos.core.mapping.EnableCosmosAuditing;
 import com.azure.spring.data.cosmos.repository.config.EnableCosmosRepositories;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.auditing.DateTimeProvider;
+
+import java.time.OffsetDateTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.Optional;
 
 @Configuration
+@EnableCosmosAuditing(dateTimeProviderRef = "currentDateTimeProvider")
 @EnableCosmosRepositories
 public class CosmosConfiguration extends AbstractCosmosConfiguration {
 
@@ -39,6 +46,25 @@ public class CosmosConfiguration extends AbstractCosmosConfiguration {
     @Override
     protected String getDatabaseName() {
         return dbName;
+    }
+
+    @Bean
+    public DateTimeProvider currentDateTimeProvider() {
+        return new CurrentDateTimeProvider();
+    }
+
+    public class CurrentDateTimeProvider implements DateTimeProvider {
+
+//        @Autowired
+//        private ClockProvider clockProvider;
+
+        @Override
+        public Optional<TemporalAccessor> getNow() {
+//            Clock clock = clockProvider.getClock();
+//            return Optional.of(OffsetDateTime.now(clock));
+            return Optional.of(OffsetDateTime.now());
+        }
+
     }
 
 }

@@ -24,6 +24,8 @@ class DemoRepositoryTest extends Specification {
 		then:
 		assert entity.value == savedEntity.value
 		assert savedEntity.id != null
+        assert savedEntity.lastModifiedDate != null
+        assert savedEntity.createdDate != null
     }
 
 }
